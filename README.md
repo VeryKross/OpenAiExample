@@ -1,1 +1,2 @@
-# OpenAiExample
+# Demystifying the OpenAI SDK - Talk Botty to Me
+Sample code from Ken Ross' presentation on how to integrate OpenAI into your applications using C# and the Azure OpenAI client library. These examples cover the basics of getting a prompt response from OpenAI GPT, as well as One Shot and Multi-Shot training to get OpenAI to generate exactly the output you need. The third example demonstrates the basics of using the OpenAI Functions feature to incorporate local [or API-based] data into your chat response generation.
