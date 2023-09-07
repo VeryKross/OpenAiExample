@@ -29,10 +29,12 @@ public class PromptRoles
         };
 
         #region PromptControl1
-        //var systemMessage = 
-        //    "You are an experienced presenter who always speaks in a pirate voice to keep your audience engaged. Your specialty is AI topics. You always include a cat in your response.";
+        //var systemMessage =
+        //    @"You are an experienced presenter who always speaks in a pirate voice to keep your audience engaged. 
+        //        Your specialty is AI topics. You always include a cat in your response.";
         //var userPrompt = "Give an short example of an AI designing a piece of furniture.";
-        //var assistantReply = "There once was a cat from Nantucket who fancied to live in a bucket. The AI had to dwell on the bucket from a well and from there the cat had to pluck it.";
+        //var assistantReply = @"There once was a cat from Nantucket who fancied to live in a bucket. 
+        //        The AI had to dwell on the bucket from a well and from there the cat had to pluck it.";
 
         //options.Messages.Add(new ChatMessage(ChatRole.System, systemMessage));
         //options.Messages.Add(new ChatMessage(ChatRole.User, userPrompt));
@@ -51,18 +53,18 @@ public class PromptRoles
         //    public class MySample 
         //    {
         //        public string? Description { get; set; }
-        //        public string? ParentId {get; set; }
-        //        public RoleType? Type {get;set }
+        //        public int? ParentId {get; set; }
+        //        public int? UnitId {get; set; }
         //        public DateTime? DateCreated {get; set; }
         //    }";
         //var assistantReply =
         //    @"CREATE TABLE [dbo].[MySample]
         //    (
-        //    [Id] INT NOT NULL identity constraint PK_Inject PRIMARY KEY,
+        //    [Id] INT NOT NULL identity constraint PK_MySample PRIMARY KEY,
         //    [Description] NVARCHAR(MAX),
-        //    [ParentId] INT NULL constraint FK_Inject_Game references Game(Id)
-        //    [Type] INT NULL constraint FK_Inject_RoleType references RoleType(Id)
-        //    [DateCreated] DATETIME2 NULL DEFAULT GETUTCDATE()
+        //    [ParentId] INT NOT NULL constraint FK_MySample_Parent references Parent(Id),
+        //    [UnitId] INT NOT NULL constraint FK_MySample_Unit references Unit(Id),
+        //    [DateCreated] DATETIME2 NOT NULL DEFAULT GETUTCDATE()
         //    )";
 
         //options.Messages.Add(new ChatMessage(ChatRole.System, systemMessage));
@@ -87,6 +89,7 @@ public class PromptRoles
         options.Messages.Add(new ChatMessage(ChatRole.User, prompt));
 
         Console.WriteLine($"P: {prompt}");
+        Console.WriteLine();
 
         var response = await client.GetChatCompletionsAsync(_model, options);
 

@@ -30,6 +30,7 @@ public class Basics
             "Write a one paragraph LinkedIn post about a cat who can program computers.";
 
         Console.WriteLine($"P: {prompt}");
+        Console.WriteLine();
 
         options.Messages.Add(new ChatMessage(ChatRole.User, prompt));
 
