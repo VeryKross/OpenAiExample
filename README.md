@@ -3,4 +3,4 @@ Sample code from Ken Ross' presentation on how to integrate OpenAI into your app
 
 ![image](https://github.com/VeryKross/OpenAiExample/assets/11561147/2f752841-c187-42c5-9d0f-185a321a9c51)
 
-Companion slide deck is available here: https://www.slideshare.net/secret/leZsuC6pwnAB2j
+Companion slide deck is available here: https://bit.ly/OpenAiSDK2023
