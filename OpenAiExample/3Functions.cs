@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Azure;
 using Azure.AI.OpenAI;
 using static OpenAiExample.KeyManager;
 
@@ -13,16 +14,22 @@ namespace OpenAiExample;
 // using gpt-3.5-turbo-0613 or gpt-4-0613 model.
 public class Functions 
 {
-    private readonly string _model;
-
-    public Functions(string model)
-    {
-        _model = model;
-    }
-
     public async Task<string> GoAsync()
     {
-        var client = new OpenAIClient(SecretKey);
+        OpenAIClient client;
+        string model;
+
+        UseAzure = true;
+        if (UseAzure)
+        {
+            client = new OpenAIClient(new Uri(AzureOpenAIUrl), new AzureKeyCredential(SecretKey));
+            model = AzureOpenAIModel;
+        }
+        else
+        {
+            client = new OpenAIClient(SecretKey);
+            model = "gpt-3.5-turbo-0613";
+        }
 
         // Set the options for the chat completion
         var options = new ChatCompletionsOptions()
@@ -83,7 +90,7 @@ public class Functions
         options.Functions.Add(getWeatherFunctionDefinition);
 
         // Get the response from the OpenAI API
-        var response = await client.GetChatCompletionsAsync(_model, options);
+        var response = await client.GetChatCompletionsAsync(model, options);
 
         var responseChoice = response.Value.Choices[0];
 
@@ -132,7 +139,7 @@ public class Functions
         // may register multiple functions, you would probably want to loop through the responses until you get
         // a response with a FinishReason of CompletionsFinishReason.Stop or CompletionsFinishReason.MaxTokens since
         // the AI may need to call multiple functions before it can generate its final response.
-        response = await client.GetChatCompletionsAsync(_model, options);
+        response = await client.GetChatCompletionsAsync(model, options);
         responseChoice = response.Value.Choices[0];
 
         return responseChoice.Message.Content;

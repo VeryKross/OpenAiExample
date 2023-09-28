@@ -1,20 +1,27 @@
-﻿using Azure.AI.OpenAI;
+﻿using Azure;
+using Azure.AI.OpenAI;
 using static OpenAiExample.KeyManager;
 
 namespace OpenAiExample;
 
 public class Basics
 {
-    private readonly string _model;
-
-    public Basics(string model)
-    {
-        _model = model;
-    }
-
     public async Task<string> GoAsync()
     {
-        var client = new OpenAIClient(SecretKey);
+        OpenAIClient client;
+        string model;
+
+        UseAzure = true;
+        if (UseAzure)
+        {
+            client = new OpenAIClient(new Uri(AzureOpenAIUrl), new AzureKeyCredential(SecretKey));
+            model = AzureOpenAIModel;
+        }
+        else
+        {
+            client = new OpenAIClient(SecretKey);
+            model = "gpt-3.5-turbo";
+        }
 
         // Set the options for the chat completion
         var options = new ChatCompletionsOptions()
@@ -33,7 +40,7 @@ public class Basics
 
         options.Messages.Add(new ChatMessage(ChatRole.User, prompt));
 
-        var response = await client.GetChatCompletionsAsync(_model, options);
+        var response = await client.GetChatCompletionsAsync(model, options);
 
         var completions = response.Value;
         var content = completions.Choices[0].Message.Content;
