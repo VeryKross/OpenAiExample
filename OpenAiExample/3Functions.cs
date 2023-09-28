@@ -28,22 +28,23 @@ public class Functions
         else
         {
             client = new OpenAIClient(SecretKey);
-            model = "gpt-3.5-turbo-0613";
+            model = "gpt-3.5-turbo-0613"; // <<= The "-0613" suffix is needed to enable the OpenAI Function feature
         }
 
         // Set the options for the chat completion
         var options = new ChatCompletionsOptions()
         {
-            Temperature = (float)0.5,
-            MaxTokens = 800,
-            NucleusSamplingFactor = (float)0.95,
-            FrequencyPenalty = 0,
-            PresencePenalty = 0
+            //Temperature = 0.5f,               // The higher the temperature, the more "creative" the text
+            MaxTokens = 800,                  // The maximum number of tokens to generate in the completion
+            NucleusSamplingFactor = 0.95f,    // How much of the previous tokens to sample from (.1 = 10%)
+            FrequencyPenalty = 0f,            // The higher the value, the less likely the AI will repeat words
+            PresencePenalty = 0f              // The higher the value, the less likely the AI will repeat statements
         };
 
         // Create a list of messages. This acts as the conversation state/history for the AI.
         // This approach makes it easy to control the conversation flow and to add additional
         // context for the AI to use when generating its response (like function results).
+        // Note: try modifying the prompt to ask for specific units, like Celsius or Fahrenheit.
         var conversationMessages = new List<ChatMessage>()
         {
             new(ChatRole.User, "What is the weather like in Atlanta?"),

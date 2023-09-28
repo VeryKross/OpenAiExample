@@ -28,18 +28,18 @@ public class PromptRoles
         // Set the options for the chat completion
         var options = new ChatCompletionsOptions()
         {
-            Temperature = (float)0.5,
-            MaxTokens = 800,
-            NucleusSamplingFactor = (float)0.95,
-            FrequencyPenalty = 0,
-            PresencePenalty = 0
+            //Temperature = 1.5f,               // The higher the temperature, the more "creative" the text
+            MaxTokens = 800,                  // The maximum number of tokens to generate in the completion
+            NucleusSamplingFactor = 0.95f,    // How much of the previous tokens to sample from (.1 = 10%)
+            FrequencyPenalty = 0f,            // The higher the value, the less likely the AI will repeat words
+            PresencePenalty = 0f              // The higher the value, the less likely the AI will repeat statements
         };
 
         #region PromptControl1
-        //var systemMessage = 
+        //var systemMessage =
         //    "You are an experienced presenter who always speaks in a pirate voice to keep your audience engaged. Your specialty is AI topics. You always include a cat in your response.";
         //var userPrompt = "Give an short example of an AI designing a piece of furniture.";
-        //var assistantReply = "There once was a cat from Nantucket who fancied to live in a bucket. The AI had to dwell on the bucket from a well and from there the cat had to pluck it.";
+        //var assistantReply = "Arr matey! Imagine a smart AI, ye see, sketchin’ a chair with a fluffy cushion, perfect for a cat nap. It considers comfort, style, and a special spot for our feline friend. Shiver me timbers, that’s innovation!";
 
         //options.Messages.Add(new ChatMessage(ChatRole.System, systemMessage));
         //options.Messages.Add(new ChatMessage(ChatRole.User, userPrompt));
@@ -87,6 +87,8 @@ public class PromptRoles
         //        public int? StoreId {get; set; }
         //        public DateTime? DateCreated {get; set; }
         //    }";
+
+        // Remember to comment out the prompt below if you uncomment the code above.
         #endregion
 
         var prompt = "Provide a one paragraph design for a car.";

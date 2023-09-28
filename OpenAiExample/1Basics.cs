@@ -26,11 +26,11 @@ public class Basics
         // Set the options for the chat completion
         var options = new ChatCompletionsOptions()
         {
-            Temperature = (float)0.5,
-            MaxTokens = 800,
-            NucleusSamplingFactor = (float)0.95,
-            FrequencyPenalty = 0,
-            PresencePenalty = 0
+            Temperature = 1.5f,               // The higher the temperature, the more "creative" the text
+            MaxTokens = 800,                  // The maximum number of tokens to generate in the completion
+            //NucleusSamplingFactor = 0.95f,    // How much of the previous tokens to sample from (.1 = 10%)
+            FrequencyPenalty = 0f,            // The higher the value, the less likely the AI will repeat words
+            PresencePenalty = 0f              // The higher the value, the less likely the AI will repeat statements
         };
 
         var prompt = 
