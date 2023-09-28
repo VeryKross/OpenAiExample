@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Azure;
 using Azure.AI.OpenAI;
 using static OpenAiExample.KeyManager;
 
@@ -13,30 +14,37 @@ namespace OpenAiExample;
 // using gpt-3.5-turbo-0613 or gpt-4-0613 model.
 public class Functions 
 {
-    private readonly string _model;
-
-    public Functions(string model)
-    {
-        _model = model;
-    }
-
     public async Task<string> GoAsync()
     {
-        var client = new OpenAIClient(SecretKey);
+        OpenAIClient client;
+        string model;
+
+        UseAzure = true;
+        if (UseAzure)
+        {
+            client = new OpenAIClient(new Uri(AzureOpenAIUrl), new AzureKeyCredential(SecretKey));
+            model = AzureOpenAIModel;
+        }
+        else
+        {
+            client = new OpenAIClient(SecretKey);
+            model = "gpt-3.5-turbo-0613"; // <<= The "-0613" suffix is needed to enable the OpenAI Function feature
+        }
 
         // Set the options for the chat completion
         var options = new ChatCompletionsOptions()
         {
-            Temperature = (float)0.5,
-            MaxTokens = 800,
-            NucleusSamplingFactor = (float)0.95,
-            FrequencyPenalty = 0,
-            PresencePenalty = 0
+            //Temperature = 0.5f,               // The higher the temperature, the more "creative" the text
+            MaxTokens = 800,                  // The maximum number of tokens to generate in the completion
+            NucleusSamplingFactor = 0.95f,    // How much of the previous tokens to sample from (.1 = 10%)
+            FrequencyPenalty = 0f,            // The higher the value, the less likely the AI will repeat words
+            PresencePenalty = 0f              // The higher the value, the less likely the AI will repeat statements
         };
 
         // Create a list of messages. This acts as the conversation state/history for the AI.
         // This approach makes it easy to control the conversation flow and to add additional
         // context for the AI to use when generating its response (like function results).
+        // Note: try modifying the prompt to ask for specific units, like Celsius or Fahrenheit.
         var conversationMessages = new List<ChatMessage>()
         {
             new(ChatRole.User, "What is the weather like in Atlanta?"),
@@ -83,7 +91,7 @@ public class Functions
         options.Functions.Add(getWeatherFunctionDefinition);
 
         // Get the response from the OpenAI API
-        var response = await client.GetChatCompletionsAsync(_model, options);
+        var response = await client.GetChatCompletionsAsync(model, options);
 
         var responseChoice = response.Value.Choices[0];
 
@@ -132,7 +140,7 @@ public class Functions
         // may register multiple functions, you would probably want to loop through the responses until you get
         // a response with a FinishReason of CompletionsFinishReason.Stop or CompletionsFinishReason.MaxTokens since
         // the AI may need to call multiple functions before it can generate its final response.
-        response = await client.GetChatCompletionsAsync(_model, options);
+        response = await client.GetChatCompletionsAsync(model, options);
         responseChoice = response.Value.Choices[0];
 
         return responseChoice.Message.Content;

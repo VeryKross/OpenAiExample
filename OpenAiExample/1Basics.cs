@@ -1,29 +1,36 @@
-﻿using Azure.AI.OpenAI;
+﻿using Azure;
+using Azure.AI.OpenAI;
 using static OpenAiExample.KeyManager;
 
 namespace OpenAiExample;
 
 public class Basics
 {
-    private readonly string _model;
-
-    public Basics(string model)
-    {
-        _model = model;
-    }
-
     public async Task<string> GoAsync()
     {
-        var client = new OpenAIClient(SecretKey);
+        OpenAIClient client;
+        string model;
+
+        UseAzure = true;
+        if (UseAzure)
+        {
+            client = new OpenAIClient(new Uri(AzureOpenAIUrl), new AzureKeyCredential(SecretKey));
+            model = AzureOpenAIModel;
+        }
+        else
+        {
+            client = new OpenAIClient(SecretKey);
+            model = "gpt-3.5-turbo";
+        }
 
         // Set the options for the chat completion
         var options = new ChatCompletionsOptions()
         {
-            Temperature = (float)0.5,
-            MaxTokens = 800,
-            NucleusSamplingFactor = (float)0.95,
-            FrequencyPenalty = 0,
-            PresencePenalty = 0
+            Temperature = 1.5f,               // The higher the temperature, the more "creative" the text
+            MaxTokens = 800,                  // The maximum number of tokens to generate in the completion
+            //NucleusSamplingFactor = 0.95f,    // How much of the previous tokens to sample from (.1 = 10%)
+            FrequencyPenalty = 0f,            // The higher the value, the less likely the AI will repeat words
+            PresencePenalty = 0f              // The higher the value, the less likely the AI will repeat statements
         };
 
         var prompt = 
@@ -34,7 +41,7 @@ public class Basics
 
         options.Messages.Add(new ChatMessage(ChatRole.User, prompt));
 
-        var response = await client.GetChatCompletionsAsync(_model, options);
+        var response = await client.GetChatCompletionsAsync(model, options);
 
         var completions = response.Value;
         var content = completions.Choices[0].Message.Content;
